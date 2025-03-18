@@ -38,7 +38,6 @@ void cadastro(contato *p){
     cod += 1;
     printf(">> Operação realizada com sucesso.\n");
 }
-
 void excluir(){
     if(cod > 0){
         int num = 0;
@@ -56,21 +55,40 @@ void excluir(){
         printf("\n>> Lista de contatos vazia.\n");
     }
 }
-
+void quicksort(int low, int high){ // Método quicksort
+    if (high > low) {
+        contato *pivot = contats[high];
+        int i = low - 1;
+        for (int j = low; j < high; j++) { //O(N)
+            if (strcmp(contats[j]->nome, pivot->nome) < 0) {
+                i++;
+                contato *temp = contats[i];
+                contats[i] = contats[j];
+                contats[j] = temp;
+            }
+        }
+        contato *temp = contats[i + 1];
+        contats[i + 1] = contats[high];
+        contats[high] = temp;
+        int pi = i + 1;
+        quicksort(low, pi - 1);
+        quicksort(pi + 1, high);
+    }
+}
 void exibir(){
     if(cod > 0){
+        quicksort(0, cod - 1);
         printf("\n================== Lista de contatos ==================\n");
         printf("%-10s %-10s %-10s %-10s %-10s", "Código", "Nome", "Número", "Email", "Endereço");
         printf("\n-------------------------------------------------------\n");
         for(int x = 0; x < cod; x++){
-            printf("%-10d %-10s %-10d %-10s %-10s\n", cod, contats[x]->nome, contats[x]->numero, contats[x]->email, contats[x]->endereco);
+            printf("%-10d %-10s %-10d %-10s %-10s\n", x+1, contats[x]->nome, contats[x]->numero, contats[x]->email, contats[x]->endereco);
         }
         printf("\n-------------------------------------------------------\n");
     }else{
         printf("\n>> Lista de contatos vazia.\n");
     }
 }
-
 int main(){
     setlocale(LC_ALL, "Portuguese");
     int opcion = 0;
@@ -97,6 +115,7 @@ int main(){
             if(cod > 0){
                 printf("Qual item deseja atualizar? ");
                 scanf("%d", &opc);
+                setbuf(stdin, NULL);
                 if(opc > 0 || opc <= cod){
                     opc--;
                     cadastro(contats[opc]);
